@@ -14,7 +14,7 @@
 double rate_total, p;
 double t, dt;
 double ranval;
-int pop_size;
+	int pop_size;
 int i; 
 
 using namespace std;
@@ -24,7 +24,7 @@ void main ()
 	t = 0.0;
 	pop_size = 10;
 	rate_total = alpha + beta;
-	p = alpha/rate_total; 
+		p = alpha/rate_total; 
 	
 	srand (time(NULL));
 
@@ -40,18 +40,18 @@ void main ()
 						ranval = rand()%2;
 
 						dt = -1.0*log(ranval)/rate_total;
-		        t = t + dt;
-		        
-		        if (ranval < p) 
-		        	pop_size = pop_size + 1;
-		         
-		        else
-		        	pop_size = pop_size - 1;
-		         		      
-		        if (pop_size < 0)
-		        	pop_size = 0;
-		        	
-		      	myfile << t << "," << pop_size << "\n";
+						t = t + dt;
+
+						if (ranval < p) 
+							pop_size = pop_size + 1;
+
+						else
+							pop_size = pop_size - 1;
+
+						if (pop_size < 0)
+							pop_size = 0;
+
+						myfile << t << "," << pop_size << "\n";
 		      					
 						} while (t < 200.0);
 
@@ -66,7 +66,6 @@ void main ()
 
 	}
 	
-// unsure about this part
 	ofstream myfile2 ("deterministic.dat");
 		myfile2 << "0.00" << " 10\n"; 
 
@@ -75,7 +74,7 @@ void main ()
 		}
 	myfile2.close();
 
-// unsure about this too 
+// able to plot but has warnings
 	system("gnuplot -p plot.gnu");
 
 	cout << "\n";
