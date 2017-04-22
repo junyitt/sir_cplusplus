@@ -31,8 +31,8 @@ void main ()
 	ofstream myfile ("data_sir_stochastic.csv");
   	if (myfile.is_open())
   	{
-			myfile << "t " << t << " pops " << pops << " popi " << popi;
-			myfile << " popr " << popr << "\n"; 
+			myfile << "time, pops, popi, popr\n";
+			myfile << t << "," << pops << "," << popi << "," << popr << "\n";
 
 				for (i = 1; i <= 100; i++)
 				{
@@ -40,8 +40,7 @@ void main ()
 						{
 							rate_total = beta*pops*popi + gamma*popi;
 
-							//random number from ? 
-							ranval = rand()%100;
+							ranval = rand()%2;
 							
 							 dt = -1.0*log(ranval)/rate_total;
 								t = t + dt;
@@ -62,13 +61,11 @@ void main ()
 										
 								if (popi <= 0){
 								    popi = 0;
-								    myfile << "t " << t << " pops " << pops << " popi " << popi;
-								    myfile << " popr " << popr << "\n"; 
+
+									myfile << t << "," << pops << "," << popi << "," << popr << "\n";
 								}
 
-								myfile << "t " << t << " pops " << pops << " popi " << popi;
-								myfile << " popr " << popr << "\n"; 
-
+									myfile << t << "," << pops << "," << popi << "," << popr << "\n";
 				 		}while (t < 100.0);
 			}			 
   	}
@@ -78,6 +75,10 @@ void main ()
 		}
 			
   myfile.close();
+
+	// can't plot the graph 
+  system("gnuplot -p sir-i.gnu");
+  
 	cout << "Output csv completed...";
 
 	_getch(); 
