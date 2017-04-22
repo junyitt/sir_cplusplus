@@ -31,13 +31,13 @@ void main ()
 	ofstream myfile ("data_sir_immi_emi.csv");
 		if (myfile.is_open())
 		{
-			myfile << "t" << t << "pop_size" << pop_size << "\n";
+			myfile << "t, pop_size\n";
+			myfile << t << "," << pop_size << "\n";
 
 				for (i = 1; i <= 100; i++)
 				{
 					do { 
-						// rand number ?
-						ranval = rand()%100;
+						ranval = rand()%2;
 
 						dt = -1.0*log(ranval)/rate_total;
 		        t = t + dt;
@@ -51,7 +51,7 @@ void main ()
 		        if (pop_size < 0)
 		        	pop_size = 0;
 		        	
-		      	myfile << "t" << t << "pop_size" << pop_size << "\n";
+		      	myfile << t << "," << pop_size << "\n";
 		      					
 						} while (t < 200.0);
 
