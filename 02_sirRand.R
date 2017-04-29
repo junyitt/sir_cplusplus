@@ -23,9 +23,8 @@ fdf <<- gdf0
 fdfcolName <<- c("t", "s", "i", "r", "place", "betap", "gammap", paste0("M", 1:nPlace))
 colnames(fdf) <- fdfcolName
 
+gdf <<- fdf
 AA <- lapply(tInt, FUN = function(time){
-      nn <- nrow(fdf);
-      gdf <- fdf[(nn-nPlace+1):nn,]
       gdf[,1] <- gdf[,1]+tstep
       #Generate M and replace gdf 6:6+n-1
       seed <- ceiling(runif(1,1,100000));
@@ -37,41 +36,19 @@ AA <- lapply(tInt, FUN = function(time){
             rk4(G = g, tstep = tstep, M = mMat, row = place)
       })
       
-      partdf <- rbind.fill(sirplace.list)
-      fdf <<- rbind(fdf, partdf)
+      gdf <<- rbind.fill(sirplace.list)
+      
+      return(gdf)
 })
 
+fdf <<- do.call(rbind, AA)
 
-a <-lapply(1:nPlace, FUN = function(row){
-      rr <<- row
-      #track migration
-      dfmat <<- data.frame()
-      cname.dfmat <- paste0("M", row, 1:nPlace);
-      # g <- as.numeric(df_t[row,2:4])
-      g <- as.numeric(df_t[row,1:4])
-      betap <<- bbeta[row]
-      gammap <<- ggamma[row]
-      sir_list <- lapply(tInt, FUN = function(x){
-            g[1] <- g[1] + tstep
-            seed <- ceiling(runif(1,1,100000));
-            mMat <- generateM.f(nPlace = 2, seed = seed, g[1])
-            dfmat <<- rbind(dfmat, mMat[row,])
-            # g <<- rk4(g[2:4],x, tstep, mMat);
-            
-            g <<- rk4(g, tstep, mMat, rr);
-            return(g)
-      })
-      df <- as.data.frame(do.call(rbind, sir_list))
-      colnames(df) <- c("time", "s", "i","r")
-      colnames(dfmat) <- cname.dfmat
-      #combine
-      df2 <- data.frame(df, dfmat)
-      return(df2)
-})
 
-df <- a[[1]]
-df2 <- melt(df, id.vars = "time")
-ggplot(df2, aes(x=time, y = value, group = variable, color = variable)) + geom_point()
+df <- fdf[1:5]
+df2 <- melt(df, id.vars = c("t", "place")); df2[,"place"] <- as.factor(df2[,"place"])
+ggplot(df2, aes(x=t, y = value, group = variable, color = variable)) + geom_point()
+
+ggplot(df2, aes(x=t, y = value, colour=variable)) + geom_point() + facet_grid(place~.)
 
 ##Write files
 K <- 1:nPlace
