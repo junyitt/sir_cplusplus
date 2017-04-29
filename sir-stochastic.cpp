@@ -34,14 +34,20 @@ void main ()
 			myfile << "time, pops, popi, popr\n";
 			myfile << t << "," << pops << "," << popi << "," << popr << "\n";
 
-				for (i = 1; i <= 100; i++)
-				{
-					do 
-						{
+				// for (i = 1; i <= 100; i++)
+				// {
+				do 
+					{
+						if(popi == 0){
+							t = t+0.1; //step
+						}else{
+						
 							rate_total = beta*pops*popi + gamma*popi;
 
-							ranval = rand()%2;
-							
+							// ranval = rand()%2; It's not bernoulli 0 or 1, should be uniform between 0 to 1
+							ranval = (rand()) % 1000;
+							ranval = ranval/1000 + 0.00001;
+						
 							 dt = -1.0*log(ranval)/rate_total;
 								t = t + dt;
 								p = beta*pops*popi/rate_total;
@@ -56,18 +62,23 @@ void main ()
 								   popr = popr + 1;
 								}
 								
-								if (pops <= 0) 
+								if (pops <= 0) {
 										pops = 0;
-										
-								if (popi <= 0){
-								    popi = 0;
-
-									myfile << t << "," << pops << "," << popi << "," << popr << "\n";
 								}
+								if (popi <= 0){
+									popi = 0;
 
+									// myfile << t << "," << pops << "," << popi << "," << popr << "\n";
+								}
+						}
+									
 									myfile << t << "," << pops << "," << popi << "," << popr << "\n";
-				 		}while (t < 100.0);
-			}			 
+									
+									cout << "t: " << t    << ";; rand: " << ranval  << ";; rate_total: " << rate_total     << ";; pops: " << pops  << ";; popi: " << popi  << ";; popr: " << popr << endl;
+						
+					}while (popi > 0 || t < 120);
+				
+			// }			 
   	}
   	
   	else {
@@ -77,7 +88,7 @@ void main ()
   myfile.close();
 
 	// can't plot the graph 
-  system("gnuplot -p sir-i.gnu");
+  // system("gnuplot -p sir-i.gnu");
   
 	cout << "Output csv completed...";
 
