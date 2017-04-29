@@ -10,16 +10,16 @@ tstep <- 0.05;
 nsteps = endtime/tstep;
 
 #NUMBER OF PLACES
-nPlace <- 2; places.v <- 1:nPlace
+nPlace <- 3; places.v <- 1:nPlace
 M0 <- data.frame(matrix(0, nPlace, nPlace)); 
 
 ###PLACE PARAMETER
-pp = c(1e6, 1e6);
-ss = c(1e6-1000, 1e6);
-ii <- c(1000, 0);
-rr = c(0,0);
+pp = c(1e6, 1e6, 1e6);
+ss = c(1e6-1000, 1e6, 1e6-100);
+ii <- c(1000, 0,100);
+rr = c(0,0,0);
 
-bbeta = c(0.65/pp[1], 0.4/pp[2])
+bbeta = c(0.65/pp[1], 0.4/pp[2], 0.5/pp[3])
 ggamma = 0.33333; 
 
 
@@ -37,7 +37,7 @@ AA <- lapply(tInt, FUN = function(time){
       gdf[,1] <- gdf[,1]+tstep
       #Generate M and replace gdf 6:6+n-1
       seed <- ceiling(runif(1,1,100000));
-      mMat <- generateM.f(nPlace = 2, seed = seed, time)
+      mMat <- generateM.f(nPlace = nPlace, seed = seed, time)
       gdf[,8:(nPlace+8-1)] <- mMat
     
       sirplace.list <- lapply(1:nPlace, FUN = function(place){

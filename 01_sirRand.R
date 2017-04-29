@@ -14,7 +14,7 @@ rr = c(0,0);
 t = 0;
 nPlace <- 2;
 
-tInt <-seq(from=0, to=endtime, by = tstep)
+tInt <-seq(from=0+tstep, to=endtime, by = tstep)
 
 gdf0 <- data.frame(t = 0, s = ss, i = ii, r = rr)
 
@@ -23,6 +23,7 @@ df_t <<- gdf0
 
 
 a <-lapply(1:nPlace, FUN = function(row){
+rr <<- row
 #track migration
 dfmat <<- data.frame()
 cname.dfmat <- paste0("M", row, 1:nPlace);
@@ -37,7 +38,7 @@ cname.dfmat <- paste0("M", row, 1:nPlace);
                   dfmat <<- rbind(dfmat, mMat[row,])
             # g <<- rk4(g[2:4],x, tstep, mMat);
             
-            g <<- rk4(g, tstep, mMat);
+            g <<- rk4(g, tstep, mMat, rr);
             return(g)
       })
       df <- as.data.frame(do.call(rbind, sir_list))
@@ -50,6 +51,17 @@ cname.dfmat <- paste0("M", row, 1:nPlace);
 
 df <- a[[1]]
 df2 <- melt(df, id.vars = "time")
-ggplot(df2, aes(x=time, y = value, group = variable, color = variable)) + geom_point()
+ggplot(df2, aes(x=time, y = value, group = variable, color = variable)) + geom_point() 
+      
 
+      
+      
+##Write files
+K <- 1:nPlace
+lapply(K, FUN = function(num){
+      df <- a[[num]]
+      setwd("C:/Users/User/Desktop")
+      fname <- paste0("Place_", num, format(Sys.time(), "%Y%m%d_%H%M_%S"),".csv")
+      write.csv(df, fname, row.names = F)
+})
 
