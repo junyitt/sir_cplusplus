@@ -1,10 +1,124 @@
-# Simulate data from normal distribution
-y1 <- round(rnorm(n = 36, mean = 7, sd = 2))
-y2 <- round(rnorm(n = 36, mean = 21, sd = 6))
-y3 <- round(rnorm(n = 36, mean = 50, sd = 8))
-x <- rep(LETTERS[1:12], 3)
-grp <- rep(c("Grp 1", "Grp 2", "Grp 3"), each = 12)
-dat <- data.frame(grp, x, y1, y2, y3)
+# # Simulate data from normal distribution
+# y1 <- round(rnorm(n = 36, mean = 7, sd = 2))
+# y2 <- round(rnorm(n = 36, mean = 21, sd = 6))
+# y3 <- round(rnorm(n = 36, mean = 50, sd = 8))
+# x <- rep(LETTERS[1:12], 3)
+# grp <- rep(c("Grp 1", "Grp 2", "Grp 3"), each = 12)
+# dat <- data.frame(grp, x, y1, y2, y3)
+
+urlf <- "https://raw.githubusercontent.com/junyitt/sir_cplusplus/master/data/output_sir.csv"
+
+library(curl)
+fdf <- read.csv( curl(urlf) )
+
+### graph
+      df <- fdf[1:5]
+      df2 <- melt(df, id.vars = c("t", "place")); df2[,"place"] <- factor(df2[,"place"], levels=c(1,2,3), labels = placeName, ordered=TRUE)
+      # ggplot(df2, aes(x=t, y = value, group = variable, color = variable)) + geom_point()
+      
+      # ggplot(df2, aes(x=t, y = value, colour=variable)) + geom_point() + facet_grid(place~.)
+      L1<-lapply(unique(df2[,"place"]), FUN = function(x){
+            u1 <- df2[,"place"] == x
+            df3 <- df2[u1,]
+            g <- ggplot(df3, aes(x=t, y = value, colour=variable)) + geom_point() + ggtitle(x)
+            return(g)
+      })
+
+
+###chart
+      t0 <- lapply(0.05, FUN = function(x){
+            u1 <- fdf[,"t"] == x
+            fdf[u1,][2:4]
+      })[[1]]
+            
+      list.place.df <- lapply(unique(fdf[,"place"]), FUN = function(x){ u1 <- fdf[,"place"] == x; fdf[u1,] }) 
+      
+      tpeak <- lapply(list.place.df, FUN = function(dff){
+            u1 <- which(dff[,"i"] == max(dff[,"i"]))
+            dff[u1,][2:4]
+      })
+      tpeak <- rbind.fill(tpeak)
+
+# pie1:
+setwd("C:/Users/User/git/sir_cplusplus/infographics")
+png("pie1.png")
+par(mfrow=(c(1,2)))
+slices <- as.numeric(t0[1,])
+lbls <- paste0(c("S", "I", "R"), ": ")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls,"%",sep="") # ad % to labels 
+pie(slices,labels = lbls, col=c("yellow", "red", "green"),
+    main="Proportion of SIR in MYS, t = 0")
+
+
+slices <- as.numeric(tpeak[1,])
+lbls <- paste0(c("S", "I", "R"), ": ")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls,"%",sep="") # ad % to labels 
+pie(slices,labels = lbls, col=c("yellow", "red", "green"),
+    main="when \"I\" peaked")
+
+dev.off();
+
+
+
+# pie2:
+png("pie2.png")
+par(mfrow=(c(1,2))); 
+slices <- as.numeric(t0[2,])
+lbls <- paste0(c("S", "I", "R"), ": ")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls,"%",sep="") # ad % to labels 
+pie(slices,labels = lbls, col=c("yellow", "red", "green"),
+    main="Proportion of SIR in SGP, t = 0")
+
+
+slices <- as.numeric(tpeak[2,])
+lbls <- paste0(c("S", "I", "R"), ": ")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls,"%",sep="") # ad % to labels 
+pie(slices,labels = lbls, col=c("yellow", "red", "green"),
+    main="When \"I\" peaked")
+dev.off()
+
+
+# pie3:
+png("pie3.png")
+par(mfrow=(c(1,2)))
+slices <- as.numeric(t0[3,])
+lbls <- paste0(c("S", "I", "R"), ": ")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls,"%",sep="") # ad % to labels 
+pie(slices,labels = lbls, col=c("yellow", "red", "green"),
+    main="Proportion of SIR in THA, t = 0")
+
+
+slices <- as.numeric(tpeak[3,])
+lbls <- paste0(c("S", "I", "R"), ": ")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls,"%",sep="") # ad % to labels 
+pie(slices,labels = lbls, col=c("yellow", "red", "green"),
+    main="when \"I\" peaked")
+
+dev.off()
+
+png("graph1.png")
+      L1[[1]]
+dev.off()
+
+png("graph2.png")
+L1[[2]]
+dev.off()
+
+png("graph3.png")
+L1[[3]]
+dev.off()
 
 #font 
 windowsFonts(
@@ -32,7 +146,8 @@ kobe_theme <- function() {
 
 # Generate Infographic in PDF format
 library(grid)
-pdf("C:/Users/sheey/Desktop/sir/myfile/Infographicstes7.pdf", width = 15, height = 20)
+pdf("C:/Users/User/Desktop/InfoGraphics.pdf", width = 15, height = 20)
+
 grid.newpage() 
 pushViewport(viewport(layout = grid.layout(4, 3)))
 grid.rect(gp = gpar(fill = "#E2E2E3", col = "#E2E2E3"))
@@ -63,8 +178,16 @@ grid.text(paste(
 #p3 <- pie(data = dat, aes(x = reorder(x, rep(1:12, 3)), y = y3, group = factor(grp))) +
 #  geom_bar(stat = "identity", fill = "#552683") + coord_polar() + facet_grid(. ~ grp) +
 #  ylab("Y LABEL") + xlab("X LABEL") + ggtitle("SIR MODEL")
-p3 <- pie(y3, main = "SIR MODEL", col = "#552683")
+p3 <- pie(c(1,2,3), main = "SIR MODEL", col = "#552683", angle = c(45,45,180))
 print(p3, vp = vplayout(4, 1:3))
+
+slices <- c(10, 12, 4, 16, 8) 
+lbls <- c("US", "UK", "Australia", "Germany", "France")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels 
+lbls <- paste(lbls,"%",sep="") # ad % to labels 
+pie(slices,labels = lbls, col=rainbow(length(lbls)),
+    main="Pie Chart of Countries")
 
 #line graph y2
 #p2 <- plot(data = dat, aes(x = x, y = y2, group = factor(grp))) +
@@ -79,7 +202,7 @@ print(p3, vp = vplayout(4, 1:3))
 #  coord_flip() + ylab("Y LABEL") + xlab("X LABEL") + facet_grid(. ~ grp) +
 #  ggtitle("TITLE OF THE FIGURE")
 #p1 + kobe_theme()
-p1 <- barplot(y1, main = "TITLE", col = "#552683", xlab = "X LABEL", ylab = "Y LABEL") 
+# p1 <- barplot(y1, main = "TITLE", col = "#552683", xlab = "X LABEL", ylab = "Y LABEL") 
 #print(p1, vp = vplayout(3, 1:3))
 
 dev.off()

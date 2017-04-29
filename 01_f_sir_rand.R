@@ -1,10 +1,16 @@
-lambda.f <-function(nPlace, time){
-      runif(nPlace^2, 10,100)*exp(-0.05*time);
+lambda.f <-function(nPlace, time, migdata = NULL){
+      if(is.null(migdata)){
+            runif(nPlace^2, 10,100)*exp(-0.05*time);
+      }else{
+            migperday*exp(-0.05*time);
+      }
 }
 
-generateM.f <- function(nPlace, seed, time){
+generateM.f <- function(nPlace, seed, time, migperday){
       set.seed(seed)
-      k <- rpois(n = nPlace^2, lambda = lambda.f(nPlace, time))
+      k <- rpois(n = nPlace^2, lambda = lambda.f(nPlace, time, migperday))
+      #scale time
+      # k <- k*log(1.2+time)/(log(1.2+endtime))
       mMat <- matrix(k, nrow = nPlace, ncol = nPlace, byrow = T)
       diag(mMat) <- 0
       return(mMat)
@@ -42,7 +48,7 @@ rk4 <- function(G, tstep, M, row){
       r = r + (r1 + (2.0*(r2 + r3)) + r4)/6.0;
       
       if(i < 0.5){ i <- 0 }
-      
+      if(r < 0.5){ r <- 0 }
       dff <- t(c(t,s,i,r, G[5:length(G)]))
       dff<-as.data.frame(dff)             
       colnames(dff) <- fdfcolName
@@ -60,7 +66,6 @@ derivS <- function( tdummy,  sdummy,  idummy,  rdummy, betap, gammap){
 derivI <- function( tdummy,  sdummy,  idummy,  rdummy, M.mat, row, betap, gammap){
       return(betap*sdummy*idummy - gammap*idummy - sum(M.mat[row,]) + sum(M.mat[,row])); #add random exp
 }
-
 derivR <- function( tdummy, sdummy,  idummy,  rdummy, betap, gammap){
       return(gammap*idummy);
 }
