@@ -41,6 +41,7 @@ rk4 <- function(G, tstep, M, row){
       i = i + (i1 + (2.0*(i2 + i3)) + i4)/6.0;
       r = r + (r1 + (2.0*(r2 + r3)) + r4)/6.0;
       
+      if(i < 0.5){ i <- 0 }
       
       dff <- t(c(t,s,i,r, G[5:length(G)]))
       dff<-as.data.frame(dff)             

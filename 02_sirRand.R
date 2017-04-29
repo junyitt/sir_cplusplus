@@ -7,9 +7,10 @@ nsteps = endtime/tstep;
 
 pp = c(1e6, 1e6);
 ss = pp*0.999;
-ii = pp*0.001;
+# ii = pp*0.001; 
+ii <- c(1000, 0);
 rr = c(0,0);
-bbeta = 0.95/pp
+bbeta = 0.65/pp
 ggamma = 0.33333; 
 t = 0;
 nPlace <- 2; places.v <- 1:nPlace
@@ -28,7 +29,7 @@ AA <- lapply(tInt, FUN = function(time){
       gdf[,1] <- gdf[,1]+tstep
       #Generate M and replace gdf 6:6+n-1
       seed <- ceiling(runif(1,1,100000));
-      mMat <- generateM.f(nPlace = 2, seed = seed, g[1])
+      mMat <- generateM.f(nPlace = 2, seed = seed, time)
       gdf[,8:(nPlace+8-1)] <- mMat
     
       sirplace.list <- lapply(1:nPlace, FUN = function(place){
@@ -46,16 +47,20 @@ fdf <<- do.call(rbind, AA)
 
 df <- fdf[1:5]
 df2 <- melt(df, id.vars = c("t", "place")); df2[,"place"] <- as.factor(df2[,"place"])
-ggplot(df2, aes(x=t, y = value, group = variable, color = variable)) + geom_point()
-
+# ggplot(df2, aes(x=t, y = value, group = variable, color = variable)) + geom_point()
 ggplot(df2, aes(x=t, y = value, colour=variable)) + geom_point() + facet_grid(place~.)
 
 ##Write files
-K <- 1:nPlace
-lapply(K, FUN = function(num){
-      df <- a[[num]]
-      setwd("C:/Users/User/Desktop")
-      fname <- paste0("Place_", num, format(Sys.time(), "%Y%m%d_%H%M_%S"),".csv")
-      write.csv(df, fname, row.names = F)
-})
+# K <- 1:nPlace
+# lapply(K, FUN = function(num){
+#       df <- a[[num]]
+#       setwd("C:/Users/User/Desktop")
+#       fname <- paste0("Place_", num, format(Sys.time(), "%Y%m%d_%H%M_%S"),".csv")
+#       write.csv(df, fname, row.names = F)
+# })
+
+setwd("C:/Users/User/Desktop")
+      fname <- paste0("Place_", 1, format(Sys.time(), "%Y%m%d_%H%M_%S"),".csv")
+      write.csv(fdf, fname, row.names = F)
+
 
