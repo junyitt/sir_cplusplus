@@ -97,7 +97,7 @@ grid.arrange(L1[[1]],L1[[2]], L1[[3]],  ncol=2)
 
 setwd("C:/Users/User/Desktop/")
       # fname <- paste0("Place_", 1, format(Sys.time(), "%Y%m%d_%H%M_%S"),".csv")
-      fname <- "output_sir.csv"
+      fname <- "output_sir1.csv"
       
       write.csv(fdf, fname, row.names = F)
       

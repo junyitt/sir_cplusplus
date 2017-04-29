@@ -4,10 +4,7 @@
 library(shiny)
 library(leaflet)
 
-# fdf
 # setwd("C:/Users/User/Desktop")
-# fdf <- read.csv("Place_120170429_1817_14.csv")
-
 urlf <- "https://raw.githubusercontent.com/junyitt/sir_cplusplus/master/data/output_sir.csv"
 
 library(curl)
