@@ -1,20 +1,28 @@
 library(plyr);library(dplyr);
 library(reshape2)
 library(ggplot2)
-endtime <- 120; 
+
+t = 0;
+##Parameters
+#Steps
+endtime <- 240; 
 tstep <- 0.05;
 nsteps = endtime/tstep;
 
-pp = c(1e6, 1e6);
-ss = pp*0.999;
-# ii = pp*0.001; 
-ii <- c(1000, 0);
-rr = c(0,0);
-bbeta = 0.65/pp
-ggamma = 0.33333; 
-t = 0;
+#NUMBER OF PLACES
 nPlace <- 2; places.v <- 1:nPlace
 M0 <- data.frame(matrix(0, nPlace, nPlace)); 
+
+###PLACE PARAMETER
+pp = c(1e6, 1e6);
+ss = c(1e6-1000, 1e6);
+ii <- c(1000, 0);
+rr = c(0,0);
+
+bbeta = c(0.65/pp[1], 0.4/pp[2])
+ggamma = 0.33333; 
+
+
 
 tInt <-seq(from=0+tstep, to=endtime, by = tstep)
 
