@@ -3,6 +3,7 @@
 
 library(shiny)
 library(leaflet)
+library(ggplot2)
 
 # setwd("C:/Users/User/Desktop")
 urlf <- "https://raw.githubusercontent.com/junyitt/sir_cplusplus/master/data/output_sir.csv"
@@ -33,5 +34,29 @@ shinyServer(function(input, output, session) {
         
         
   })
+  
+  dff2 <- fdf[,c(1,3,5)]
+  placeName <- c("Kuala Lumpur", "Singapore", "Bangkok")
+  dff2[,"place"] <- factor(dff2[,"place"], levels=c(1,2,3), labels = placeName, ordered=TRUE)
+  g0 <- ggplot() + geom_point(data = dff2, aes(x=t, y = i, group=place, colour = place)) +
+        scale_colour_manual(breaks = dff2$place, 
+                            values = c("#f4b942","#ef53d5", "#f45541"))
+
+  
+  output$plot1 <- renderPlot({
+        
+        df <- fdf[,c(1,3,5)]
+        time <- input$bins
+        u1 <- df[, "t"] > time
+        df2 <- df[u1,][1:3,]
+            df2[,"place"] <- factor(df2[,"place"], levels=c(1,2,3), labels = placeName, ordered=TRUE)
+       # x1 <- as.numeric(df2[1,1]); y1 <- as.numeric(df2[1,2])
+        
+      g <- g0  + geom_vline(xintercept=time, linetype="dashed")
+      # + geom_point(data = df2, mapping = aes(x = t, y = i, color = place), cex = 5) 
+      g
+        
+  })
+  
   
 })

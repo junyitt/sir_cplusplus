@@ -23,6 +23,7 @@ shinyUI(fluidPage(
           )
           ), 
           
+          plotOutput("plot1"),
           
           # actionButton("recalc", "Random Locations!"),
           p()
