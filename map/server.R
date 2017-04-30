@@ -35,6 +35,16 @@ shinyServer(function(input, output, session) {
         
   })
   
+  
+  output$leafl <- renderUI({
+        if(!is.null(input$GetScreenHeight)){
+              width  <- session$clientData$output_image1_width
+              print(session$clientData)
+              height <- session$clientData$output_image1_height
+              leafletOutput("mymap", width = "100%", height = input$GetScreenHeight)
+        }
+  })
+  
   dff2 <- fdf[,c(1,3,5)]
   placeName <- c("Kuala Lumpur", "Singapore", "Bangkok")
   dff2[,"place"] <- factor(dff2[,"place"], levels=c(1,2,3), labels = placeName, ordered=TRUE)
@@ -52,7 +62,7 @@ shinyServer(function(input, output, session) {
             df2[,"place"] <- factor(df2[,"place"], levels=c(1,2,3), labels = placeName, ordered=TRUE)
        # x1 <- as.numeric(df2[1,1]); y1 <- as.numeric(df2[1,2])
         
-      g <- g0  + geom_vline(xintercept=time, linetype="dashed")
+      g <- g0  + geom_vline(xintercept=time, linetype="dashed") + ggtitle("Number of Infected")
       # + geom_point(data = df2, mapping = aes(x = t, y = i, color = place), cex = 5) 
       g
         

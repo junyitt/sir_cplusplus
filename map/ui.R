@@ -13,18 +13,25 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-          leafletOutput("mymap"),
           
-          column(10,
+          fixedRow(
+          column(5,
           sliderInput("bins", "Time:",
                       min = 0, max = 150, value = 0, step = step,
                       animate=animationOptions(interval=interval, loop=F)
                       
           )
+          )
           ), 
-          
-          plotOutput("plot1"),
-          
+          fixedRow(
+          column(6,
+             leafletOutput("mymap")
+          ),
+          column(6,
+                uiOutput("leafl"),
+                plotOutput("plot1")
+          )
+          ),
           # actionButton("recalc", "Random Locations!"),
           p()
           
